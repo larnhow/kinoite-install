@@ -1,1 +1,1 @@
-# kinoite-install
+* kinoite-install
