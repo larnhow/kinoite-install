@@ -1,3 +1,89 @@
 = kinoite-install
 
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# Silverblue
+
+## Base
+Install Fedora Silverblue
+
+    ssh-keygen
+    ssh-copy-id nuc8
+
+## Flatpaks
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+### gnome
+    flatpak install --reinstall flathub $(flatpak list --app-runtime=org.fedoraproject.Platform --columns=application | tail -n +1)
+### kde
+    Elisa                   org.kde.elisa                    24.08.2     stable  system
+    Gwenview                org.kde.gwenview                 24.08.2     stable  system
+    KCalc                   org.kde.kcalc                    24.08.2     stable  system
+    KMahjongg               org.kde.kmahjongg                0.9.24082   stable  system
+    KMines                  org.kde.kmines                   4.0.24082   stable  system
+    KolourPaint             org.kde.kolourpaint              24.08.2     stable  system
+    KRDC                    org.kde.krdc                     24.08.2     stable  system
+    Okular                  org.kde.okular                   24.08.2     stable  system
+    Skanpage                org.kde.skanpage                 24.08.2     stable  system
+
+
+    flatpak install --reinstall flathub $(flatpak list --app-runtime=org.fedoraproject.KDE6Platform --columns=application | tail -n +1)
+
+    flatpak remote-delete fedora
+
+## RPMFUSION
+    rpm-ostree install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -r
+    rpm-ostree update --uninstall rpmfusion-free-release --uninstall rpmfusion-nonfree-release --install rpmfusion-free-release --install rpmfusion-nonfree-release
+    rpm-ostree install ffmpegthumbnailer libavcodec-freeworld -r
+
+## Rebase to uBlue
+
+### Intel / Amd
+    rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/silverblue-main:latest
+    rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/silverblue-main:latest
+
+### Nvidia
+
+    rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/silverblue-nvidia:latest
+    rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/silverblue-nvidia:latest
+    
+## Settings
+
+    ujust regenerate-grub
+
+## Drucker
+    
+    lpadmin -p xerox -v ipp://xerox.home.arpa/ipp/print -m everywhere
+
+## NIX
+
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+    nix run home-manager/master -- init --switch
+
+
+    Nix was installed successfully!
+To get started using Nix, open a new shell or run 
+
+    . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh`
+
+
+    git clone nuc8:/data/shares/gandor/git/home-manager.git
+    git clone nuc8:/data/shares/gandor/git/os-configs.git
+    
+    
+
+## Ansible
+   
+   ansible install
+   
+   
+## Optimizations
+
+    sudo dmsetup info luks-<UUID>
+    
+  
+
+    sudo cryptsetup --allow-discards --perf-no_read_workqueue --perf-no_write_workqueue --persistent refresh <name>
+
+    sudo cryptsetup luksDump /dev/disk/by-id/ata- Samsung_SSD_870_EVO_2TB_S6PPNF0W310522N-part3 | grep Flags
+
+
+old    rpm-ostree kargs --append=rd.luks.options=aba7e529-e52c-417e-b76c-6e7f006f377c=discard
+   
